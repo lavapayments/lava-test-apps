@@ -1,0 +1,20 @@
+{
+  "name": "math-class",
+  "version": "1.0.0",
+  "description": "AI-powered math practice app using Lava Monetize",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs"
+  },
+  "keywords": [
+    "lava",
+    "monetize",
+    "math",
+    "education",
+    "ai"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
+}

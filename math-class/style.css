@@ -1,0 +1,157 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  color: #667eea;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+}
+
+#problem-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.problem {
+  font-size: 3em;
+  font-weight: bold;
+  color: #333;
+  margin: 20px 0;
+}
+
+#input-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#answer-input {
+  flex: 1;
+  padding: 15px;
+  font-size: 1.2em;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#answer-input:focus {
+  border-color: #667eea;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.1s;
+}
+
+button:hover {
+  background: #5568d3;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+#feedback-section {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #f8f9fa;
+}
+
+#feedback-section.hidden {
+  display: none;
+}
+
+.correct {
+  color: #28a745;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.incorrect {
+  color: #dc3545;
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.explanation {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+#next-btn {
+  width: 100%;
+  background: #28a745;
+}
+
+#next-btn:hover {
+  background: #218838;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .problem {
+    font-size: 2.5em;
+  }
+
+  #input-section {
+    flex-direction: column;
+  }
+}
