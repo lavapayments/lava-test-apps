@@ -9,14 +9,14 @@ import { useEffect, useRef, useState } from 'react';
 const CONFIG = {
   products: {
     paygo: {
-      // TODO: Replace with your pay-as-you-go product secret
+      // TODO: This product secret is not implemented - always uses .env product secret
       secret: 'ps_test_your_paygo_product_secret_here',
       name: 'Pay-as-you-go',
       price: 0,
       pricePerQuery: 0.5,
     },
     pro: {
-      // TODO: Replace with your subscription product secret
+      // TODO: This product secret is not implemented - always uses .env product secret
       secret: 'ps_test_your_pro_product_secret_here',
       name: 'Pro Plan',
       price: 10,
@@ -89,6 +89,7 @@ function App() {
         const connectionData = await response.json();
         console.log('✅ Connection data received');
 
+        //TODO: Balance is not implemented - always uses $10.00
         const newSession: Session = {
           plan: selectedPlan!,
           walletId: connectionData.walletId,

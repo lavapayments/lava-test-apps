@@ -24,9 +24,11 @@ if (!process.env.PRODUCT_SECRET) {
 
 // ===========================================
 // INITIALIZE LAVA SDK
+// TODO: update baseUrl depending on dev or prod environment
 // ===========================================
 const lava = new Lava(process.env.LAVA_SECRET_KEY, {
   apiVersion: '2025-04-28.v1',
+  baseUrl: 'http://localhost:3000/v1/'
 });
 
 // ===========================================
@@ -62,7 +64,7 @@ app.post('/api/checkout/create-session', async (req, res) => {
       reference_id: `travel-advisor-${plan}-${Date.now()}`,
     };
 
-    // Add subscription config for subscription plans
+    // TODO: This isn't actually implemented yet and does not work
     if (plan === 'pro') {
       sessionParams.subscription_config_id = productSecret;
     }
@@ -128,7 +130,9 @@ app.post('/api/chat', async (req, res) => {
 
     // Forward request to Lava Build API
     const response = await fetch(
-      'https://api.lavapayments.com/v1/forward/openai?u=https://api.openai.com/v1/chat/completions',
+      // TODO: update url depending on dev or prod environment
+      // Use api.lavapayments.com/v1 for prod and http://localhost:[port]/v1 for dev
+      'http://localhost:3000/v1/forward/openai?u=https://api.openai.com/v1/chat/completions',
       {
         method: 'POST',
         headers: {
