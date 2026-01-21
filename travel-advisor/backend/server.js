@@ -16,19 +16,29 @@ if (!process.env.LAVA_SECRET_KEY) {
   process.exit(1);
 }
 
-if (!process.env.PRODUCT_SECRET) {
-  console.error('❌ PRODUCT_SECRET is not set in .env file');
-  console.error('   Get your product secret from your product settings in the Lava dashboard');
+if (!process.env.METER_SECRET) {
+  console.error('❌ METER_SECRET is not set in .env file');
+  console.error('   Get your meter secret from your meter settings in the Lava dashboard');
   process.exit(1);
 }
 
 // ===========================================
+// LAVA API CONFIGURATION
+// ===========================================
+const LAVA_ENVIRONMENT = process.env.LAVA_ENVIRONMENT || 'production';
+const LAVA_BASE_URLS = {
+  production: 'https://api.lavapayments.com/v1/',
+  sandbox: 'https://sandbox.lavapayments.com/v1/',
+  local: 'http://localhost:3000/v1/',
+};
+const LAVA_BASE_URL = LAVA_BASE_URLS[LAVA_ENVIRONMENT] || LAVA_BASE_URLS.production;
+
+// ===========================================
 // INITIALIZE LAVA SDK
-// TODO: update baseUrl depending on dev or prod environment
 // ===========================================
 const lava = new Lava(process.env.LAVA_SECRET_KEY, {
   apiVersion: '2025-04-28.v1',
-  baseUrl: 'http://localhost:3000/v1/'
+  baseUrl: LAVA_BASE_URL,
 });
 
 // ===========================================
@@ -49,24 +59,27 @@ app.get('/api/health', (req, res) => {
 // Create checkout session
 app.post('/api/checkout/create-session', async (req, res) => {
   try {
-    const { productSecret, plan, originUrl } = req.body;
+    const { plan, originUrl } = req.body;
 
-    if (!productSecret) {
-      return res.status(400).json({
-        error: 'Product secret is required',
-      });
-    }
-
-    // Create checkout session
-    const sessionParams = {
-      checkout_mode: 'onboarding',
+    // Build session params based on plan type
+    let sessionParams = {
       origin_url: originUrl || 'http://localhost:5173',
       reference_id: `travel-advisor-${plan}-${Date.now()}`,
     };
 
-    // TODO: This isn't actually implemented yet and does not work
     if (plan === 'pro') {
-      sessionParams.subscription_config_id = productSecret;
+      // Pro plan uses subscription checkout mode
+      if (!process.env.PRO_SUBSCRIPTION_CONFIG_ID) {
+        return res.status(500).json({
+          error: 'Pro plan not configured',
+          message: 'PRO_SUBSCRIPTION_CONFIG_ID is not set in .env file',
+        });
+      }
+      sessionParams.checkout_mode = 'subscription';
+      sessionParams.subscription_config_id = process.env.PRO_SUBSCRIPTION_CONFIG_ID;
+    } else {
+      // Pay-as-you-go uses onboarding checkout mode (no subscription_config_id needed)
+      sessionParams.checkout_mode = 'onboarding';
     }
 
     console.log('Creating checkout session with params:', sessionParams);
@@ -98,7 +111,7 @@ app.get('/api/checkout/connection/:connectionId', async (req, res) => {
     // Generate forward token using SDK
     const forwardToken = lava.generateForwardToken({
       connection_secret: connection.connection_secret,
-      product_secret: process.env.PRODUCT_SECRET,
+      product_secret: process.env.METER_SECRET,
     });
 
     console.log('✅ Connection retrieved and forward token generated');
@@ -130,9 +143,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Forward request to Lava Build API
     const response = await fetch(
-      // TODO: update url depending on dev or prod environment
-      // Use api.lavapayments.com/v1 for prod and http://localhost:[port]/v1 for dev
-      'http://localhost:3000/v1/forward/openai?u=https://api.openai.com/v1/chat/completions',
+      `${LAVA_BASE_URL}forward/openai?u=https://api.openai.com/v1/chat/completions`,
       {
         method: 'POST',
         headers: {
@@ -215,7 +226,9 @@ app.listen(PORT, () => {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log(`📍 Server running at: http://localhost:${PORT}`);
   console.log(`🏥 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🌐 Lava Environment: ${LAVA_ENVIRONMENT} (${LAVA_BASE_URL})`);
   console.log(`🔑 Lava Secret Key: ${process.env.LAVA_SECRET_KEY ? '✓ Configured' : '✗ Missing'}`);
-  console.log(`📦 Product Secret: ${process.env.PRODUCT_SECRET ? '✓ Configured' : '✗ Missing'}`);
+  console.log(`📦 Meter Secret: ${process.env.METER_SECRET ? '✓ Configured' : '✗ Missing'}`);
+  console.log(`📋 Pro Subscription Config: ${process.env.PRO_SUBSCRIPTION_CONFIG_ID ? '✓ Configured' : '✗ Not set (Pro plan disabled)'}`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 });

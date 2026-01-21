@@ -2,22 +2,16 @@ import { useLavaCheckout } from '@lavapayments/checkout';
 import { useEffect, useRef, useState } from 'react';
 
 // ===========================================
-// CONFIGURATION - UPDATE THESE VALUES
+// CONFIGURATION
 // ===========================================
-// Get your product secrets from the Lava dashboard:
-// https://dashboard.lavapayments.com/products
 const CONFIG = {
   products: {
     paygo: {
-      // TODO: This product secret is not implemented - always uses .env product secret
-      secret: 'ps_test_your_paygo_product_secret_here',
       name: 'Pay-as-you-go',
       price: 0,
       pricePerQuery: 0.5,
     },
     pro: {
-      // TODO: This product secret is not implemented - always uses .env product secret
-      secret: 'ps_test_your_pro_product_secret_here',
       name: 'Pro Plan',
       price: 10,
       pricePerMonth: 10,
@@ -162,8 +156,6 @@ function App() {
 
   const createCheckoutSession = async (plan: PlanType) => {
     try {
-      const productSecret = CONFIG.products[plan].secret;
-
       const response = await fetch(
         `${CONFIG.backendUrl}/api/checkout/create-session`,
         {
@@ -172,7 +164,6 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            productSecret,
             plan,
             originUrl: window.location.origin,
           }),
