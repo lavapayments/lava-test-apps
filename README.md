@@ -7,6 +7,7 @@ Example applications for testing Lava Monetize integration.
 | App | Description |
 |-----|-------------|
 | [travel-advisor](./travel-advisor) | AI travel advisor demo with checkout flow and usage-based billing |
+| [travel-advisor-v2](./travel-advisor-v2) | Enhanced travel advisor demo with logged-in vs logged-out checkout handling |
 | [math-class](./math-class) | Math practice app with AI tutoring feedback |
 
 ## Adding a New Test App
