@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": "usr_prod_demo",
+      "email": "demo@travelai.app",
+      "name": "Prod Demo User",
+      "passwordHash": "ec93f6d39afff76e75cdeb160d1b2f419c87210d5a6c108d1f905f76ea4aa589",
+      "createdAt": "2026-02-12T00:00:00.000Z"
+    }
+  ]
+}
